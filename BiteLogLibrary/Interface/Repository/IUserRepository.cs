@@ -12,5 +12,6 @@ namespace BiteLogLibrary.Interface.Repository
     {
         Task<User?> GetByEmailAsync(string email);
         Task<User?> GetByUsernameAsync(string username);
+        Task UpdatePasswordAsync(User user);
     }
 }

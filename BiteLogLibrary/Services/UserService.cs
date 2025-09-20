@@ -5,6 +5,7 @@ using BiteLogLibrary.Interface.Services;
 using BiteLogLibrary.Models;
 using BiteLogLibrary.Repository;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +18,15 @@ namespace BiteLogLibrary.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly CustomPasswordHasher _passwordHasher;
+        // private readonly CustomPasswordHasher _passwordHasher;
+        private readonly IPasswordHasher<User> _hasher;
 
-      
-        public UserService(IUserRepository userRepository, CustomPasswordHasher passwordHasher)
+
+        public UserService(IUserRepository userRepository, IPasswordHasher<User> hasher) //CustomPasswordHasher passwordHasher)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-            _passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
+            _hasher = hasher ?? throw new ArgumentNullException(nameof(hasher));
+            //_passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
         }
 
     
@@ -55,7 +58,7 @@ namespace BiteLogLibrary.Services
             {
                 Id = 0,
                 SignupDate = DateTime.Now.ToString(),
-                Password = _passwordHasher.HashPassword(registerRequest.Password),
+               // Password = _passwordHasher.HashPassword(registerRequest.Password),
                 Email = registerRequest.Email,
                 LastName = registerRequest.LastName,
                 FirstName = registerRequest.FirstName,
@@ -65,12 +68,47 @@ namespace BiteLogLibrary.Services
                 Weight = registerRequest.Weight,
 
             };
-         
-       
-          return await _userRepository.AddAsync(user);
+            user.Password = _hasher.HashPassword(user, registerRequest.Password);
+
+
+            return await _userRepository.AddAsync(user);
         }
 
+        public async Task<AuthResult> AuthenticateAsync(LoginRequest registerRequest)
+        {
+            if (string.IsNullOrWhiteSpace(registerRequest.Identifier) || string.IsNullOrWhiteSpace(registerRequest.Password))
+                return await Task.FromResult(new AuthResult { Success = false, Message = "Identifier and password are required." });
 
+            // slå op på email eller username (trim + evt. ToLower)
+            var id = registerRequest.Identifier.Trim();
+            var user = await _userRepository.GetByEmailAsync(id)
+                   ?? await _userRepository.GetByUsernameAsync(id);
 
+            if (user is null)
+                return await Task.FromResult(new AuthResult { Success = false, Message = "Invalid credentials." });
+
+            var result = _hasher.VerifyHashedPassword(user, user.Password, registerRequest.Password);
+            if (result == PasswordVerificationResult.Failed)
+                return await Task.FromResult(new AuthResult { Success = false, Message = "Invalid credentials." });
+
+            // Opgrader hash hvis nødvendigt
+            if (result == PasswordVerificationResult.SuccessRehashNeeded)
+            {
+                user.Password = _hasher.HashPassword(user, registerRequest.Password);
+                await _userRepository.UpdatePasswordAsync(user); // tilføj i repo (se nedenfor)
+            }
+
+            // Returnér kun sikre felter (ingen password)
+            user.Password = string.Empty;
+            
+            return new AuthResult { Success = true, Message = "Logged in", User = user.ToDto() };
+        }
+
+        public bool VerifyPassword(User user, string password)
+        {
+            var r = _hasher.VerifyHashedPassword(user, user.Password, password);
+            return r is PasswordVerificationResult.Success or PasswordVerificationResult.SuccessRehashNeeded;
+
+        }
     }
 }

@@ -4,6 +4,7 @@ using BiteLogLibrary.Interface.Services;
 using BiteLogLibrary.Models;
 using BiteLogLibrary.Repository;
 using BiteLogLibrary.Services;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,8 @@ builder.Services.AddSingleton<DailyLogRepository>(new DailyLogRepository());
 builder.Services.AddSingleton<CustomMealRepository>(new CustomMealRepository());
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddSingleton<CustomPasswordHasher>();
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+//builder.Services.AddSingleton<CustomPasswordHasher>();
 //builder.Services.AddSingleton<IGenericAsyncRepository<Recipe>, RecipeRepository>();
 builder.Services.AddCors(options =>
 {

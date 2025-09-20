@@ -85,7 +85,25 @@ namespace BiteLogRESTAPI.Controllers
             if (deletedUser == null) { return NotFound("No such book, id: " + id); }
             return Ok(deletedUser);
         }
+        [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Login([FromBody] LoginRequest req)
+        {
+            var result = await _userService.AuthenticateAsync(req);
+            if (!result.Success)
+                return Unauthorized(new { message = result.Message });
 
-     
-    }
+            // match din frontend-kontrakt
+            return Ok(new
+            {
+                success = true,
+                message = result.Message,
+                user = new { result.User!.Id, result.User!.Username, result.User!.Email }
+                // token = result.Token // hvis/naar du tilføjer JWT
+            });
+
+        }
+    } 
 }

@@ -96,7 +96,12 @@ namespace BiteLogLibrary.Repository
 
             return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
-
+        public async Task UpdatePasswordAsync(User user)
+        {
+            _context.Users.Attach(user);
+            _context.Entry(user).Property(u => u.Password).IsModified = true;
+            await _context.SaveChangesAsync();
+        }
 
     }
 }

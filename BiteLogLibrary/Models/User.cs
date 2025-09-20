@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace BiteLogLibrary.Models
@@ -16,7 +17,7 @@ namespace BiteLogLibrary.Models
         public string LastName { get; set; }
         public string Email { get; set; }
         public string? SignupDate { get; set; }
-
+        [JsonIgnore]
         public string Password { get; set; }
         public float Weight { get; set; }
         public float Height { get; set; }
