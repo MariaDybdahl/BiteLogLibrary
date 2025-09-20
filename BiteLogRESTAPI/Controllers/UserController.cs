@@ -1,4 +1,5 @@
 ﻿using BiteLogLibrary.DTO;
+using BiteLogLibrary.Interface.Repository;
 using BiteLogLibrary.Interface.Services;
 using BiteLogLibrary.Models;
 using BiteLogLibrary.Repository;
@@ -13,10 +14,10 @@ namespace BiteLogRESTAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly UserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IUserService _userService;
 
-        public UserController(UserRepository userRepository, IUserService userService)
+        public UserController(IUserRepository userRepository, IUserService userService)
         {
             _userRepository = userRepository;
             _userService = userService;
@@ -84,5 +85,7 @@ namespace BiteLogRESTAPI.Controllers
             if (deletedUser == null) { return NotFound("No such book, id: " + id); }
             return Ok(deletedUser);
         }
+
+     
     }
 }

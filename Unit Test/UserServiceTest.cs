@@ -13,13 +13,13 @@ namespace Unit_Test
     public class UserServiceTest
     {
         private Mock<IUserRepository> _mockRepo;
-        private PasswordHasher _passwordHasher;
+        private CustomPasswordHasher _passwordHasher;
         private UserService _userService;
         [TestInitialize]
         public void Setup()
         {
             _mockRepo = new Mock<IUserRepository>();
-            _passwordHasher = new PasswordHasher(); // eller mock hvis nødvendigt
+            _passwordHasher = new CustomPasswordHasher(); // eller mock hvis nødvendigt
             _userService = new UserService(_mockRepo.Object, _passwordHasher);
         }
 

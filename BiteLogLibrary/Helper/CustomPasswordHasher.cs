@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BiteLogLibrary.Helper
 {
-    public class PasswordHasher
+    public class CustomPasswordHasher
     {
 
         public string HashPassword(string password)

@@ -1,3 +1,5 @@
+using BiteLogLibrary.Helper;
+using BiteLogLibrary.Interface.Repository;
 using BiteLogLibrary.Interface.Services;
 using BiteLogLibrary.Models;
 using BiteLogLibrary.Repository;
@@ -8,12 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddSingleton<UserRepository>(new UserRepository());
 builder.Services.AddSingleton<FoodRepository>(new FoodRepository());
 builder.Services.AddSingleton<CustomMealFoodRepository>(new CustomMealFoodRepository());
 builder.Services.AddSingleton<DailyLogRepository>(new DailyLogRepository());
 builder.Services.AddSingleton<CustomMealRepository>(new CustomMealRepository());
-builder.Services.AddSingleton<IUserService>(new UserService());
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddSingleton<CustomPasswordHasher>();
 //builder.Services.AddSingleton<IGenericAsyncRepository<Recipe>, RecipeRepository>();
 builder.Services.AddCors(options =>
 {

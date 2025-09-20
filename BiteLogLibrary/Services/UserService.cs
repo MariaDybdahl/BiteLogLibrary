@@ -16,34 +16,27 @@ namespace BiteLogLibrary.Services
 {
     public class UserService : IUserService
     {
-        private IUserRepository _userRepository;
-        private object @object;
-        private readonly PasswordHasher _passwordHasher;
+        private readonly IUserRepository _userRepository;
+        private readonly CustomPasswordHasher _passwordHasher;
 
-        public UserService(IUserRepository userRepository, PasswordHasher passwordHasher)
+      
+        public UserService(IUserRepository userRepository, CustomPasswordHasher passwordHasher)
         {
-            _userRepository = userRepository;
-            _passwordHasher = passwordHasher;
+            _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            _passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
         }
 
-        public UserService()
-        {
-        }
-
-        public UserService(IUserRepository @object)
-        {
-            this.@object = @object;
-        }
+    
 
         private async Task<string?> ValidateEmailNotTaken(string email)
         {
-          User? existingEmail =  await _userRepository.GetByEmailAsync(email);
+            ArgumentException.ThrowIfNullOrWhiteSpace(email);
+            var existing = await _userRepository.GetByEmailAsync(email);
           
-            if (existingEmail == null) 
-            {
-                return email; 
-            }
-             throw new InvalidOperationException("Email already exists"); 
+            if (existing is not null)
+                throw new InvalidOperationException("Email already exists");
+
+            return email;
 
         }
         private async Task ValidateUsernameNotTaken(string username)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BiteLogLibrary.Interface.Repository;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,9 +10,9 @@ namespace BiteLogLibrary.Repository
     public class LoginRepostory
     {
 
-        private readonly UserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
 
-        public LoginRepostory(UserRepository userRepository)
+        public LoginRepostory(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }

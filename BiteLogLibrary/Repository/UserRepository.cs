@@ -1,6 +1,7 @@
 ﻿using BiteLogLibrary.Database;
 using BiteLogLibrary.Interface.CRUD;
 using BiteLogLibrary.Interface.Repository;
+using BiteLogLibrary.Interface.Services;
 using BiteLogLibrary.Models;
 using BiteLogLibrary.Services;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
@@ -19,12 +20,12 @@ namespace BiteLogLibrary.Repository
     {
 
         private readonly BiteLogDbContext _context;
-        private readonly UserService _userService;
+        
 
-        public UserRepository(BiteLogDbContext dbContext, UserService userService)
+        public UserRepository(BiteLogDbContext dbContext)
         {
             _context = dbContext;
-            _userService = userService;
+            
         }
         public UserRepository()
         {
@@ -85,19 +86,6 @@ namespace BiteLogLibrary.Repository
             return user;
         }
      
-        private string HashPassword(User user)
-        {   
-            byte[] salt = RandomNumberGenerator.GetBytes(128 / 8); 
-
-            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: user.Password!,
-                salt: salt,
-                prf: KeyDerivationPrf.HMACSHA256,
-                iterationCount: 100000,
-                numBytesRequested: 256 / 8));
-            return hashed;
-        }
-
         public async Task<User?> GetByEmailAsync(string email)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
@@ -108,5 +96,7 @@ namespace BiteLogLibrary.Repository
 
             return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
+
+
     }
 }
