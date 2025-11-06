@@ -54,11 +54,11 @@ namespace BiteLogLibrary.Services
         {
           await ValidateEmailNotTaken(registerRequest.Email);
           await  ValidateUsernameNotTaken(registerRequest.Username);
-            var user = new User 
+        
+            var user = new User
             {
                 Id = 0,
                 SignupDate = DateTime.Now.ToString(),
-               // Password = _passwordHasher.HashPassword(registerRequest.Password),
                 Email = registerRequest.Email,
                 LastName = registerRequest.LastName,
                 FirstName = registerRequest.FirstName,
@@ -66,9 +66,12 @@ namespace BiteLogLibrary.Services
                 Gender = registerRequest.Gender,
                 Height = registerRequest.Height,
                 Weight = registerRequest.Weight,
+                DateOfBirth = registerRequest.DateOfBirth
 
             };
             user.Password = _hasher.HashPassword(user, registerRequest.Password);
+          
+         
 
 
             return await _userRepository.AddAsync(user);

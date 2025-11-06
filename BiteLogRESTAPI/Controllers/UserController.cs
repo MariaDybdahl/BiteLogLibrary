@@ -48,6 +48,7 @@ namespace BiteLogRESTAPI.Controllers
         {
             try
             {
+            
                 User createdUser = await _userService.RegisterAsync(registerRequest);
                 return Created(
                     Url.ActionContext.HttpContext.Request.Path + "/" + createdUser.Id,
