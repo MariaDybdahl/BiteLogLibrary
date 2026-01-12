@@ -16,7 +16,7 @@ Biblioteket har fokus på ren struktur, validering og testbar forretningslogik.
 - Validering af brugerdata
 - Unit tests for user-logik
 
-- ## Planlagte funktioner
+## Planlagte funktioner
 - Flere domænemodeller (fx bid-registrering)
 - Persistenslag (database eller in-memory)
 - REST API-wrapper
