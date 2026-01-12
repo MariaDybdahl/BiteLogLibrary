@@ -17,6 +17,11 @@ clean structure, validation, and testable business logic.
 - Input validation for user data
 - Unit tests covering user logic
 
+## Project structure
+- `BiteLogLibrary/` – Core class library (domain models + business logic)
+- `BiteLogRESTAPI/` – REST API wrapper (if runnable / work in progress)
+- `Unit Test/` – Unit tests (MSTest)
+
 ## Planned features
 - Additional domain models (e.g. bite log entries)
 - Persistence layer (database or in-memory storage)
