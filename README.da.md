@@ -16,6 +16,11 @@ Biblioteket har fokus på ren struktur, validering og testbar forretningslogik.
 - Validering af brugerdata
 - Unit tests for user-logik
 
+## Projektstruktur
+- `BiteLogLibrary/` – Core class library (domænemodeller + forretningslogik)
+- `BiteLogRESTAPI/` – REST API (hvis det kan køres / under udvikling)
+- `Unit Test/` – Unit tests (MSTest)
+
 ## Planlagte funktioner
 - Flere domænemodeller (fx bid-registrering)
 - Persistenslag (database eller in-memory)
